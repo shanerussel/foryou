@@ -1,324 +1,103 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Be My Valentine?</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anniversary Letter</title>
+
   <style>
-    :root{
-      --bg1:#ffdde1;
-      --bg2:#ee9ca7;
-      --card:#ffffffcc;
-      --text:#2b2b2b;
-      --accent:#ff3b7a;
-      --accent2:#ff7aa8;
-      --shadow: 0 20px 60px rgba(0,0,0,.12);
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      min-height:100vh;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color:var(--text);
-      background: radial-gradient(1200px 800px at 20% 20%, var(--bg1), transparent 60%),
-                  radial-gradient(1000px 700px at 80% 30%, #fff6, transparent 55%),
-                  linear-gradient(135deg, var(--bg1), var(--bg2));
-      overflow:hidden;
-      display:grid;
-      place-items:center;
-      padding:24px;
+    body {
+      font-family: "Georgia", serif;
+      background: #87CEFA;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
     }
 
-    .wrap{
-      width:min(720px, 100%);
-      position:relative;
-      z-index:2;
+    .letter-container {
+      max-width: 800px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(6px);
+      padding: 50px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
 
-    .card{
-      background:var(--card);
-      backdrop-filter: blur(10px);
-      border:1px solid #ffffffaa;
-      border-radius:28px;
-      box-shadow: var(--shadow);
-      padding:34px 26px 26px;
-      text-align:center;
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      text-align: center;
     }
 
-    h1{
-      margin:0 0 10px;
-      font-size: clamp(28px, 4vw, 44px);
-      letter-spacing:.2px;
+    .date {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 1rem;
+      opacity: 0.9;
     }
 
-    .sub{
-      margin:0 auto 22px;
-      max-width: 52ch;
-      font-size: clamp(14px, 2.2vw, 18px);
-      opacity:.85;
-      line-height:1.5;
+    p {
+      font-size: 1.2rem;
+      line-height: 1.9;
+      margin-bottom: 24px;
     }
 
-    .name{
-      display:inline-block;
-      padding:6px 12px;
-      border-radius:999px;
-      background:#fff;
-      border:1px solid #00000010;
-      font-weight:600;
+    .signature {
+      margin-top: 40px;
+      text-align: right;
+      font-size: 1.3rem;
+      font-style: italic;
     }
 
-    .btns{
-      display:flex;
-      gap:14px;
-      justify-content:center;
-      flex-wrap:wrap;
-      margin-top:18px;
-      position:relative;
-      min-height:64px;
-    }
+    @media (max-width: 768px) {
+      .letter-container {
+        padding: 30px;
+      }
 
-    button{
-      border:0;
-      border-radius:999px;
-      padding:14px 20px;
-      font-size:16px;
-      font-weight:700;
-      cursor:pointer;
-      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
-      box-shadow: 0 10px 24px rgba(0,0,0,.10);
-      user-select:none;
-    }
+      h1 {
+        font-size: 2.2rem;
+      }
 
-    button:active{ transform: translateY(2px) scale(.99); }
-
-    #yesBtn{
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color:white;
-    }
-    #yesBtn:hover{ transform: translateY(-2px); }
-
-    #noBtn{
-      background:white;
-      color: #333;
-      border: 1px solid #00000014;
-      position:relative;
-    }
-
-    .footer{
-      margin-top:18px;
-      font-size:13px;
-      opacity:.7;
-    }
-
-    .modal{
-      position:fixed;
-      inset:0;
-      display:none;
-      place-items:center;
-      background: rgba(0,0,0,.28);
-      z-index:10;
-      padding:24px;
-    }
-    .modal.open{ display:grid; }
-    .modalBox{
-      width:min(560px, 100%);
-      background:white;
-      border-radius:26px;
-      box-shadow: var(--shadow);
-      padding:26px;
-      text-align:center;
-      position:relative;
-      overflow:hidden;
-    }
-    .modalBox h2{
-      margin:0 0 10px;
-      font-size: clamp(22px, 3.2vw, 30px);
-    }
-    .modalBox p{ margin:0 0 18px; opacity:.85; line-height:1.5; }
-    .closeRow{
-      display:flex; gap:12px; justify-content:center; flex-wrap:wrap;
-    }
-    .smallBtn{
-      padding:12px 16px;
-      font-weight:700;
-      box-shadow:none;
-      border:1px solid #00000012;
-      background:#fff;
-    }
-
-    /* floating hearts */
-    .hearts{
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      overflow:hidden;
-      z-index:1;
-    }
-    .heart{
-      position:absolute;
-      width:16px; height:16px;
-      transform: rotate(45deg);
-      opacity:.85;
-      animation: floatUp linear forwards;
-      filter: drop-shadow(0 8px 12px rgba(0,0,0,.12));
-    }
-    .heart:before, .heart:after{
-      content:"";
-      position:absolute;
-      width:16px; height:16px;
-      background:inherit;
-      border-radius:50%;
-    }
-    .heart:before{ left:-8px; top:0; }
-    .heart:after{ left:0; top:-8px; }
-
-    @keyframes floatUp{
-      from { transform: translateY(110vh) rotate(45deg); }
-      to   { transform: translateY(-20vh) rotate(45deg); }
-    }
-
-    /* subtle sparkle */
-    .sparkle{
-      display:inline-block;
-      animation: pop 1.6s ease-in-out infinite;
-    }
-    @keyframes pop{
-      0%,100%{ transform: translateY(0); }
-      50%{ transform: translateY(-3px); }
-    }
-
-    /* mobile-friendly no-button dodge: allow tap */
-    @media (hover:none){
-      #noBtn{ position:relative; }
+      p {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
+
 <body>
-  <div class="hearts" id="hearts"></div>
 
-  <main class="wrap">
-    <section class="card" aria-label="Valentine page">
-      <h1>Will you be my Valentine? <span class="sparkle">💖</span></h1>
-      <p class="sub">
-        Hey <span class="name" id="herName">Katie</span> —
-        Lets go grab Sushi and Boba!!!
-      </p>
+  <div class="letter-container">
+    <h1>Happy Anniversary ❤️</h1>
 
-      <div class="btns">
-        <button id="yesBtn">Please say Yes</button>
-        <button id="noBtn">Dont Press No</button>
-      </div>
-      <div class="footer">You cant press no anyway BAHAHHAHAHA loser</div>
-    </section>
-  </main>
+    <div class="date">
+      May 10, 2026
+    </div>
 
-  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modalBox">
-      <h2 id="modalTitle">!!!YIPPEEEEE!!!</h2>
-      <p id="modalText">
-        Boba and Backshots?
-      </p>
-      <div class="closeRow">
-      </div>
+    <p>
+      My Love,
+    </p>
+
+    Hey wassup my babeh! Happy first anniversary to you my lovely woman (not girl) u my WOMAN. I just wanted to write this as part of your anniversary gift and perhaps ur birthday gift to talk about the amazing year we’ve had together. I am currently writing this at 4:05am lmao dont beat me up, just wanted to find an opportunity to write this without you knowing. So um, where do I start…. Basically I found the one I would risk it all for (get it) I never knew you was the light i needed in my life to start enjoying life again. Yes, I wasnt really happy in life before meeting you (sorry my bad dont beat me up x2) but ever since meeting you my life has been incredible! You are literally my motivation in life, everything I do is to have the best future together (still working on it) and become the power couple my mum wishes for xd. Let’s go back to the beginning when I found u on Hinge LMAO, im ngl i was messing around on that app with my friends because sawa was on it for a while and was streaming it on discord and they fcking told me to download it. Lowkey fire bc i met you, but i was messing around on it while streaming, howeverrr i saw u when i was by myself and thought u was so pretty and sooo my type (buff, tall asian with glasses). I remember when we was on and off on the app because I was too occupied with my league of legends phase sorreh. BUT thats what got me ur instagram ayeee. We got superrr close talking on instagram thooo. I remember we started talking about our rice purity score, our mbtis, our spotify wrapped all of them, and dont forget the freak test u mentioned lolll. I remember the first video of urself u took for me like damn u fell for me so fast heheh. I STRONGLY remember all the horny messages we shared back and forth and how you won the gooning competition ew. I loved how we took photos of wherever we went to each other, the debut i went to, the house gatherings at kims and you in hong kong which felt like foreverrrr. I remember the video of you trying to wink which was so fkcing adorable u cutie. You’d also listen to my music playlists and filipino songs which was very thoughtful of you. I loved the flower drawing you made for me based off my favourite flower, I was like damn she really loves me huh so I gotta show it back ykyk. Thats why I travelled to brum first yhhh. I remembered when I sent the messages we shared to Norman to see if you liked me hahahaha cuz im a clueless dummy. March 22nd 2025 was our first date!!. I remember getting off the bus and seeing you in ur cuteass pigtails and grey sweater, I was so fcking nervous walking with you, until you grabbed my arm and eased the tension smooth girl. You took me to Asia Asia because I really wanted to go cuz i saw it on tiktok, you had pho and i had beef bulgogi. We talked about life on our first date and I felt incredibly comfortable with you instantly. Then you took me bowling, I remember i was sweating while waiting because I was hot and nervous at the same time. Then I smashed you in bowling so hard hhehehehe.  Then u took my mollytea virginity and I had the mango osmandthus thingy i forgot. Then we went home and I still remember that long ass walk from university station with my bigahh bag. Then the Harborne arc begins! I finally got to see ur room in person! It was a while until dinner so we was chilling on ur bed, with my laptop. I think we watched anime a bit and twinkling watermelon and i played tft in front of u and got 8th lmao. Then you went to cook and while cooking you sat on my lap which got me hard asf lmao. I loved the salmon sprouts and rice you made me! Freaky time commence! I shared a tiktok for fun and you really went through with it and bought the lip balm which u made a surprise for no reason.. I fcking loved making out with you so many times (we should do it again when I come) I got hard just rn wtf. The weekend was short, but I loved our first time seeing each other. I used to stream for you when we was apart. Yes, I only streamed on twitch just so you can see me when I play my gamez. Then 2 weeks later it was ur first time in Leeds!! aye go leeds! We stayed at a hotel outside of town and went to town to watch the Minecraft Movie! U really da best for buying me the pickaxe but I hate attention and had to walk around town with it. I still remember the fortnite shirt kid staring at it lmao. Then the next day we took our first ever photobooth together and my first one in my life. It became our wallpapers for monthss. We then went around the arcades to have some fun like the guitar hero, basketball and our bowling competition again. We then got split again unfortunately as I was at Scotland and you went to Hong Kong a few days later. Your holiday was so damn long it was grueling asf so fk u for that, but then we met again May 9th (ooooo). I arrived in brum and you took my haidilao virginityyy, our first hotpot together and it was so good, we sat side by side so we could touch each other yhhh. Then later that night I gave you your first piece of clothing from me,  the burna boy shirt which i wore sm times and you gave me the snack basket from hong kong!! Loved the guava and corn snack. Then the next day we got up early afternoon to go to the botanical gardens. I loveeee walking around beautiful areas with you, makes me feel like im in heaven. I lovee the photos you took for me. I love youuu so much I had to ask you to be my one and only girlfriend under the sakura blossoms. We then went to hollywood bowlss to settle the score, i think i was winning 2-0 anyway but somehow you won here just bc its not tenpin… Then we went to red brick market for the first time and got my nami lamp!! Then we went to popmart and got my tft figure!! and got oricha and went home and u gave me fake pokemon packs!!! jkjk i loved them anyway. Then at night we watched the fortnite pro am and watched mr stable get 3rddd so tufff. The next date was June 2nd in leeds!! We went to the arcade, and you bought me a pass lmao just to watch me have fun, u really the greatest thing to ever happen to me fr. I brought you to the malaysian place to eat which was soo good, and also went to heytea where norman took a photo of us secretly. Then I came back to youuu quicklyy June 6th super early in the day we had to go to a cafe oops. But we did go to itaewon to have budaejigae together yummm. We went back to urs and had to go shopping in Harbornee, bc i remember my mcdonalds pokemon happy meal heheh. Then I went to play elden ring in ur room while you continued to watch the katseye thingy after we watched it together. Then it was ur birthdayyyy!! We started the day quite late and went to kyoto for dinnerrr, we wore white together, i loved your white dressed u looked super sexy. Next weekend! you came to Leeds super quickk. I took you to a pho place I wanted to try, loved it then took you to mr tea which started ur taro mochi obsession. We went back to the easy hotel and you was hungry for thai fooood, so we went to thai aroy dee where we had the sticky mango rice yummm. The next morning we had to checkout super early, so we had breakfast at cafe concierto which was superr good we had english breakfast and french toast. You was soo quiet here i remember i was trying to lighten the mood because you seemed down u dummy but thats okay. July 4th I arrived quite late in the afternoon, you took me to wingstopp ur favourite placee then oricha which was super good. Not much happened during this time here but i remember the pasta and garlic bread we made and the photobooth in hmv life4cuts. We had taikula and tongseol which was fire and u bought me churros which was super goood. Then we made wraps and noodles which was super yum. July 27th You came to Leeds, the same easy hotel to celebrate my birthday earlyy. We exchanged gifts here, because I gave you a sentinels jersey and you gave me a card with a valorant gift code and a pokemon box and also my mouse lets not forget. Was a quick stay in Leeds not too long but at least you were there for my birthday lmaoo. I facetimed you while they was singing happy birthday because I didnt want you to miss out, and then got super drunk and called you again then passed out loool. August 12th we met again and you took me to the bandai namco store to see the elden ring collectionss and took me to eat at miss korea where we both had jajangmyeon thingy. We also went to red brick again and thats where i got my elden ring figureee. We went to cafe nero to share a matcha before we went to the library and took some photos of me and exchanged some giftss. You gave me tennis balls and we attached Pokemon stickers to our phoness. Then you treated me to dinner at the italian place! which i did not know that you told them it was my birthday wtff and they gave me that big ass lemon meringue which wasnt that good ill be real. 2 weeks later you came to Leeds and we ate at mr su’s ! we both had ramen and dumplings and I made a huge mess on my white shirt. We went to tenpin again where I won obviously i am the best and went to have dessert at four happiness! We both split apart again because I went to Saltburn and you went to Copenhagen!! But we shortly met again 22nd September and went to Wingstop+Heytea our classic duo. During this stay, we went on our first double date! with Joe and Hazel I was a bit nervous because im not really social but it was fun talking about league of legends, elden ring and red bull (thats all i remember lmao). We bought matching pyjamas, popmarts and finished boys 2 planet while making bracelets for each other and I bought us boba bc I know when you want it. A week later I cried, you know why? because NRG WON HAHAHAHAH, i alr know they not making London but thats okay. 10th October you came to Leeds!! I brought you to the board game cafe to meet my friends, we played codenames was a bit scuffed but it was funn. We went to shop together after for snacks for our hotel! The next day I brought you to sushi, Blue Sakura!! where you took fire pictures of me in the jacket I bought in brum which I sold anyway lmao. On this day you bought me a pokemon pack and you got an insane hit. We went to the photobooth againn and took my favourite photobooth pic everr. 1st November I came to you and we ate at Asia Asia. I remember we both ordered at the Korean stall and I tried to carry both trays and the woman called me strong gentleman but ended up almost dropping one lmaoo. This was when I had the unlimited chickennn lol and u had kimbap and jajang. The christmas market arrived during this time! Loved experiencing it for the first time with you. At home I brought my laptop for you so you can play waterpark simulator lol. It was very fun watching you try play a game bc u a noob jkjk, it was rlly cute watching u. We went to many places, such as boba one where we had the dragon fruit tea, selfridges during christmas was pretty, and the university stalls to find the pokemon cards lmao. And also we ate hotpot at happy lamb! I loved this place im ngl down to go again or haidilao. I remember you went to a book signing with riyann and I was chilling in ur room playing battlefield with norman and downloaded whatnot for the first time. This is when my addiction started because I got a £70 card lmaoo. I remember we also played pico park together which tested your patience so much lmaooo and I ordered us pizza to make up for it yehyeh. During this time i was in my pokemon era, because i created you in the game and beat the game using you <3. 15th November I visited again to chill, didnt do much. You watched me play that chinese game with norman and I watched you try create a character for me. 28th November you came to Leeds, we had that thai place on the corner by noodle house which was alright in my opinion. Christmas markets arrived in Leeds! we walked around town in the cold evening holding hands seeing Leeds in Christmas. The next day we got picked up! by kyle and norman and went to Sing Kee to shop for hotpot!!. The hot pot was the besttt, i loved it when you refilled my bowl and i would always refill your bowl. You met Kim here and we played the nintendo switch game which I became really impressed with your skill but you had to see me bust a move which was embarassing lmfao. Then christmas and new year came! We couldnt really do much together here as my gift was arriving super late, however during the new year party i mentioned you to all the people. Every year each one of us say a highlight for the year, and I said the Scotland trip, then I heard kim’s dad say anddd, and then I said my girlfriend hehehe. First date in the new year I came on January 13th where you took me to kungfu noodle which was amazing. We also had tayudo which was lowkey mid but i made a heart for you on the grill made out of potatoes just for you <3. We shopped for my suit which was really good and you saw me in the suit. If i looked at the mirror any longer of us i wouldve teared up deadass, because we gonna get married fosho. Then in January 23rd you came to Leeds!! after i finished uni we met up and ate at four happiness and ended the night watching smtm together and drinking heytea in my bed. I remember I was playing and turned around and saw you cute fckig ass sleepin gin my bed god i love you so much. During this stay it was the first time I introduced you to everyone at Ciaras mums birthday! we cooked my very secret kfc recipe together and u finally tried my chickenn. We sat next to each other at the dinner table and i had to introduce you to every who walked in. I remember Ciaras mum was gassing because you said you did bio chem lmao, yes my wife will be super rich. And also you helped clean up after this fcker kyle hit my bottle lmaoo. Then after I had to go away to the philippiness! 13th February i left to go to you with my big ass luggages. This night we ate at kyoto as always and it felt kinda good telling the waiter we a couple lmaoo. But the next day I had to leave to go to the airport and leave youu sowrry. I truly appreciated you coming with me to the airport and going back by urself I feel like i couldnt have done it without you. In the Philippines I always thought about you, never once stopped thinking about you. Talked about you to my cousins saying you are the one, you’re perfect. During the wedding envisioned us up on the altar reading our wills to each other and almost cried. We had a single day dedicated to the mall and shopping but I ended up getting stuff for you lmaoo. The 10 days I had there was fun but all those 10 days I was lowkey missing you. The next time we met was March 9th after I put u in my assignment and got 70% lmaoo. We ate at rosa thai by ur recommendation and ur cravings ykyk cuz id eat anything u crave including u heheh. And we had a plan to have desert at four happiness because it wasnt that filling. And we also went to the photobooth again i remember ur big boobies popping XD. 20th March you came again to have dimsum but ohno dimsum time was over! we had super good chinese food tho, thats our new spot. Day after we went to the board game with norman and kyle and revealed freaky stuff lmao and had malatang at the sus mr. But next day we went to dimsum anyway, loved it especially the chao fan i think thats what its called but we need to get moreee. Then comes our last meeting in our year together, April 25th I really wanted to come see you and kept bugging you if I could then you gave in because you missed me soo much heheh. We had pho!! at the place you recommended, im ngl might be the best pho i had ever. I fuckin love you so much, we had such an amazing year together. Im super grateful for you. You are the light in my life. I love it when you support me in whatever im doing. I love it when you watch one piece just for me. I love it when we try new food spots together. I love everything about you so lets have an even better year together. It’s already looking fun with our first holiday together, Masters London, my first concert ever and then your graduation! I just wrote this to show my appreciation to you, bc im not that expressive but i try my best. It is currently 6:08am, I wrote this nonstop, my fingies hurt, i will prob stay up today because i woke up yesterday super late. 
+
+    <p>
+      I truly love you Katie, I hope you like the Instagram Story I dedicated to you for everyone to see. I put one of my favorite songs that remind me of you which makes me tear up every time I listen to it, because you truly are a dream, the best thing ever to happen to me. Once again, Wo ai ni 
+    </p>
+
+    <div class="signature">
+      Forever Yours,<br>
+      Shane
     </div>
   </div>
 
-  <script>
-    // ====== Customize here ======
-    const HER_NAME = "Katie <3";  // <- change this
-    // ============================
-
-    const herNameEl = document.getElementById("herName");
-    herNameEl.textContent = HER_NAME;
-
-    const hearts = document.getElementById("hearts");
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn  = document.getElementById("noBtn");
-    const modal  = document.getElementById("modal");
-    const closeBtn = document.getElementById("closeBtn");
-    const copyBtn = document.getElementById("copyBtn");
-
-    // floating hearts generator
-    function spawnHeart(){
-      const h = document.createElement("div");
-      h.className = "heart";
-      const size = 10 + Math.random() * 18;
-      h.style.width = h.style.height = size + "px";
-      h.style.left = (Math.random() * 100) + "vw";
-      h.style.background = `hsl(${330 + Math.random()*25}, 90%, ${65 + Math.random()*10}%)`;
-      const duration = 6 + Math.random()*6;
-      h.style.animationDuration = duration + "s";
-      h.style.opacity = (0.45 + Math.random()*0.5).toFixed(2);
-      hearts.appendChild(h);
-      setTimeout(() => h.remove(), duration * 1000);
-    }
-    setInterval(spawnHeart, 220);
-
-    // confetti-like burst (simple)
-    function burst(){
-      for(let i=0;i<18;i++){
-        setTimeout(spawnHeart, i*25);
-      }
-    }
-
-    // Yes opens modal
-    yesBtn.addEventListener("click", () => {
-      burst();
-      modal.classList.add("open");
-    });
-
-    closeBtn.addEventListener("click", () => modal.classList.remove("open"));
-    modal.addEventListener("click", (e) => {
-      if(e.target === modal) modal.classList.remove("open");
-    });
-
-    copyBtn.addEventListener("click", async () => {
-      const msg = `Yay!! 💘 When are you free for our Valentine’s date? 😊`;
-      try{
-        await navigator.clipboard.writeText(msg);
-        copyBtn.textContent = "Copied!";
-        setTimeout(() => copyBtn.textContent = "Copy a cute reply text", 1200);
-      }catch{
-        alert(msg);
-      }
-    });
-
-    // No button dodge (desktop only)
-    function moveNoButton(){
-      const btns = document.querySelector(".btns");
-      const rect = btns.getBoundingClientRect();
-      const maxX = rect.width - noBtn.offsetWidth;
-      const maxY = rect.height - noBtn.offsetHeight;
-
-      const x = Math.max(0, Math.min(maxX, Math.random() * maxX));
-      const y = Math.max(0, Math.min(maxY, Math.random() * maxY));
-
-      noBtn.style.position = "absolute";
-      noBtn.style.left = x + "px";
-      noBtn.style.top  = y + "px";
-    }
-
-    // Only dodge when hover is supported
-    const canHover = window.matchMedia("(hover:hover)").matches;
-    if(canHover){
-      noBtn.addEventListener("mouseenter", moveNoButton);
-      noBtn.addEventListener("click", moveNoButton);
-      // start with a stable layout
-      requestAnimationFrame(() => {
-        noBtn.style.position = "absolute";
-        noBtn.style.left = "50%";
-        noBtn.style.top = "0";
-        noBtn.style.transform = "translateX(90px)";
-      });
-    } else {
-      // On mobile, "No" just teases
-      noBtn.addEventListener("click", () => {
-        noBtn.textContent = "Nice try 😅";
-        setTimeout(() => noBtn.textContent = "No 🙈", 1000);
-      });
-    }
-  </script>
 </body>
 </html>
